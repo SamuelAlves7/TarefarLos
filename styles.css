@@ -70,7 +70,6 @@ body {
 }
 
 .icon-btn {
-  width: 34px;
   height: 34px;
   display: grid;
   place-items: center;
