@@ -1,0 +1,18 @@
+﻿services:
+  - type: web
+    name: tarefas-ia-backend
+    env: node
+    plan: free
+    buildCommand: ""
+    startCommand: node server.js
+    envVars:
+      - key: NODE_VERSION
+        value: "22"
+      - key: PORT
+        value: "3000"
+      - key: ALLOWED_ORIGINS
+        sync: false
+    disk:
+      name: tarefas-db
+      mountPath: /opt/render/project/src
+      sizeGB: 1
