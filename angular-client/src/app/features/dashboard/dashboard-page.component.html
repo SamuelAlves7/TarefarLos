@@ -1,0 +1,54 @@
+<section class="hero">
+  <div>
+    <p class="eyebrow">Resumo</p>
+    <h1>Controle rapido do seu trabalho</h1>
+    <p class="subtitle">Acompanhe tarefas ativas, pendencias e acesso rapido para a lousa.</p>
+  </div>
+
+  <div class="hero-actions">
+    <a routerLink="/tarefas" class="btn primary">Abrir tarefas</a>
+    <a routerLink="/lousa" class="btn">Abrir lousa</a>
+  </div>
+</section>
+
+<section class="metrics">
+  <article class="metric-card">
+    <span>Total</span>
+    <strong>{{ summary().total }}</strong>
+  </article>
+  <article class="metric-card">
+    <span>Pendentes</span>
+    <strong>{{ summary().pendentes }}</strong>
+  </article>
+  <article class="metric-card">
+    <span>Em execucao</span>
+    <strong>{{ summary().execucao }}</strong>
+  </article>
+  <article class="metric-card">
+    <span>Concluidas</span>
+    <strong>{{ summary().concluidas }}</strong>
+  </article>
+</section>
+
+<section class="recent">
+  <div class="section-head">
+    <h2>Ultimas tarefas</h2>
+    <a routerLink="/tarefas" class="text-link">Ver tudo</a>
+  </div>
+
+  @if (recentTasks().length) {
+    <div class="recent-list">
+      @for (task of recentTasks(); track task.id) {
+        <article class="recent-item">
+          <div>
+            <strong>{{ task.titulo }}</strong>
+            <p>{{ task.projeto }} · {{ task.prioridade }}</p>
+          </div>
+          <span class="badge">{{ task.tipo }}</span>
+        </article>
+      }
+    </div>
+  } @else {
+    <p class="empty">Nenhuma tarefa criada.</p>
+  }
+</section>

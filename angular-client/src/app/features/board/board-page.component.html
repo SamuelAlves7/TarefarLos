@@ -1,0 +1,49 @@
+<section class="board-shell">
+  <div class="board-head">
+    <div>
+      <p class="eyebrow">Lousa</p>
+      <h1>Espaco visual para mapear o projeto</h1>
+    </div>
+
+    <div class="toolbar">
+      <div class="tool-list">
+        @for (tool of tools; track tool.id) {
+          <button
+            class="tool-btn"
+            type="button"
+            [class.active]="currentTool() === tool.id"
+            [title]="tool.label"
+            (click)="setTool(tool.id)"
+          >
+            {{ tool.icon }}
+          </button>
+        }
+      </div>
+
+      <label>
+        Cor
+        <input type="color" [value]="strokeColor()" (input)="strokeColor.set($any($event.target).value)" />
+      </label>
+
+      <label>
+        Espessura
+        <input type="range" min="1" max="12" [value]="strokeWidth()" (input)="strokeWidth.set(+$any($event.target).value)" />
+      </label>
+
+      <button class="btn" type="button" (click)="undo()">Desfazer</button>
+      <button class="btn" type="button" (click)="redo()">Refazer</button>
+      <button class="btn" type="button" (click)="exportPng()">Exportar PNG</button>
+      <button class="btn danger" type="button" (click)="clearBoard()">Limpar</button>
+    </div>
+  </div>
+
+  <div class="canvas-wrap">
+    <canvas
+      #boardCanvas
+      (pointerdown)="pointerDown($event)"
+      (pointermove)="pointerMove($event)"
+      (pointerup)="pointerUp()"
+      (pointerleave)="pointerUp()"
+    ></canvas>
+  </div>
+</section>

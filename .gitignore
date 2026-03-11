@@ -1,0 +1,6 @@
+angular-client/node_modules/
+angular-client/dist/
+angular-client/.angular/
+server.out.log
+server.err.log
+npm-debug.log

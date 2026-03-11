@@ -5,6 +5,9 @@
   "description": "Gestor de tarefas com lousa e SQLite",
   "main": "server.js",
   "scripts": {
+    "client:install": "npm --prefix angular-client install",
+    "client:build": "npm --prefix angular-client run build",
+    "build": "npm run client:build",
     "start": "node server.js"
   },
   "engines": {

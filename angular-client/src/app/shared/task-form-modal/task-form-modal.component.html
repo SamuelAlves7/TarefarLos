@@ -1,0 +1,67 @@
+@if (open) {
+  <div class="modal-backdrop" (click)="close()">
+    <section class="modal-card" (click)="$event.stopPropagation()">
+      <div class="modal-head">
+        <div>
+          <p class="eyebrow">Nova tarefa</p>
+          <h3>Criar tarefa</h3>
+        </div>
+        <button class="btn" type="button" (click)="close()">Fechar</button>
+      </div>
+
+      <form class="task-form" [formGroup]="form" (ngSubmit)="submit()">
+        <label>
+          Titulo
+          <input type="text" formControlName="titulo" placeholder="Ex: Planejar sprint" />
+        </label>
+
+        <label>
+          Projeto
+          <input type="text" formControlName="projeto" list="project-options" placeholder="Ex: App Mobile" />
+          <datalist id="project-options">
+            @for (project of projects; track project) {
+              <option [value]="project"></option>
+            }
+          </datalist>
+        </label>
+
+        <label>
+          Tipo
+          <select formControlName="tipo">
+            <option value="">Selecione</option>
+            <option value="Bug">Bug</option>
+            <option value="Feature">Feature</option>
+            <option value="Melhoria">Melhoria</option>
+            <option value="Tarefa Administrativa">Tarefa Administrativa</option>
+          </select>
+        </label>
+
+        <label>
+          Prioridade
+          <select formControlName="prioridade">
+            <option value="">Selecione</option>
+            <option value="Baixa">Baixa</option>
+            <option value="Media">Media</option>
+            <option value="Alta">Alta</option>
+            <option value="Critica">Critica</option>
+          </select>
+        </label>
+
+        <label class="full">
+          Descricao
+          <textarea rows="5" formControlName="descricao" placeholder="Detalhes da tarefa"></textarea>
+        </label>
+
+        <label class="full">
+          Imagem opcional
+          <input type="file" accept="image/*" (change)="onFileSelected($event)" />
+        </label>
+
+        <div class="modal-actions full">
+          <button class="btn" type="button" (click)="close()">Cancelar</button>
+          <button class="btn primary" type="submit">Salvar tarefa</button>
+        </div>
+      </form>
+    </section>
+  </div>
+}

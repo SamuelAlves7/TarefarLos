@@ -1,0 +1,27 @@
+<div class="shell">
+  <aside class="sidebar">
+    <div class="brand">
+      <span class="brand-kicker">Workspace</span>
+      <strong>Tarefas com IA</strong>
+    </div>
+
+    <nav class="nav">
+      <a routerLink="/dashboard" routerLinkActive="active-link">Dashboard</a>
+      <a routerLink="/tarefas" routerLinkActive="active-link">Tarefas</a>
+      <a routerLink="/lousa" routerLinkActive="active-link">Lousa</a>
+    </nav>
+
+    <button class="theme-toggle" type="button" (click)="toggleTheme()">
+      @if (isDark()) {
+        <span>☀</span>
+      } @else {
+        <span>☾</span>
+      }
+      <span>{{ isDark() ? 'Modo claro' : 'Modo noturno' }}</span>
+    </button>
+  </aside>
+
+  <main class="content">
+    <router-outlet />
+  </main>
+</div>

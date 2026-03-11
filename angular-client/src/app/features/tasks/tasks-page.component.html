@@ -1,0 +1,78 @@
+<section class="tasks-shell">
+  <div class="tasks-head">
+    <div>
+      <p class="eyebrow">Tarefas</p>
+      <h1>Painel operacional por projeto</h1>
+    </div>
+
+    <div class="actions">
+      <button class="btn" type="button" (click)="expandAll()">Expandir</button>
+      <button class="btn" type="button" (click)="collapseAll()">Recolher</button>
+      <button class="btn danger" type="button" (click)="clearTasks()">Limpar</button>
+      <button class="btn primary" type="button" (click)="openCreate()">Nova tarefa</button>
+    </div>
+  </div>
+
+  @if (groupedProjects().length) {
+    <div class="project-list">
+      @for (group of groupedProjects(); track group.name) {
+        <section class="project-card">
+          <button class="project-head" type="button" (click)="toggleProject(group.name)">
+            <span>{{ group.name }}</span>
+            <span>{{ group.tasks.length }} tarefa(s)</span>
+          </button>
+
+          @if (!isCollapsed(group.name)) {
+            <div class="project-body">
+              @for (task of group.tasks; track task.id) {
+                <article class="task-card">
+                  <div class="task-top">
+                    <div>
+                      <h3>{{ task.titulo }}</h3>
+                      <div class="badges">
+                        <span class="badge">{{ task.tipo }}</span>
+                        <span class="badge">{{ task.prioridade }}</span>
+                        <span class="badge" [class]="statusClass(task)">{{ statusLabel(task) }}</span>
+                      </div>
+                    </div>
+
+                    <button class="btn" type="button" (click)="openView(task)">Visualizar</button>
+                  </div>
+
+                  <p class="task-desc">{{ task.descricao }}</p>
+
+                  <div class="task-actions">
+                    <button class="btn" type="button" [class.active-info]="task.emExecucao" (click)="toggleInProgress(task)">
+                      {{ task.emExecucao ? 'Em execucao' : 'Marcar execucao' }}
+                    </button>
+                    <button class="btn" type="button" [class.active-ok]="task.concluida" (click)="toggleDone(task)">
+                      {{ task.concluida ? 'Concluida' : 'Marcar concluida' }}
+                    </button>
+                  </div>
+                </article>
+              }
+            </div>
+          }
+        </section>
+      }
+    </div>
+  } @else {
+    <p class="empty">Nenhuma tarefa criada.</p>
+  }
+</section>
+
+<app-task-form-modal
+  [open]="formOpen()"
+  [draftTask]="draftTask()"
+  [projects]="taskStore.projectNames()"
+  (closed)="formOpen.set(false)"
+  (saved)="createTask($event)"
+/>
+
+<app-task-view-modal
+  [open]="viewOpen()"
+  [task]="selectedTask()"
+  (closed)="viewOpen.set(false)"
+  (duplicateRequested)="openDuplicate($event)"
+  (deleteRequested)="deleteTask($event)"
+/>

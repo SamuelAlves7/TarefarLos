@@ -1,7 +1,9 @@
 [build]
-  publish = "."
+  base = "angular-client"
+  command = "npm install && npm run build"
+  publish = "dist/angular-client/browser"
 
 [[redirects]]
-  from = "/"
+  from = "/*"
   to = "/index.html"
   status = 200

@@ -1,0 +1,36 @@
+@if (open && task) {
+  <div class="modal-backdrop" (click)="closed.emit()">
+    <section class="modal-card" (click)="$event.stopPropagation()">
+      <div class="modal-head">
+        <div>
+          <p class="eyebrow">Visualizacao</p>
+          <h3>{{ task.titulo }}</h3>
+        </div>
+        <button class="btn" type="button" (click)="closed.emit()">Fechar</button>
+      </div>
+
+      <div class="view-grid">
+        <p><strong>Projeto:</strong> {{ task.projeto }}</p>
+        <p><strong>Tipo:</strong> {{ task.tipo }}</p>
+        <p><strong>Prioridade:</strong> {{ task.prioridade }}</p>
+        <p><strong>Status:</strong> {{ statusText }}</p>
+        <p class="full"><strong>Criada em:</strong> {{ task.criadaEm | date:'dd/MM/yyyy HH:mm' }}</p>
+        <div class="full">
+          <strong>Descricao</strong>
+          <p class="description">{{ task.descricao }}</p>
+        </div>
+        @if (task.imagem) {
+          <div class="full">
+            <strong>Imagem</strong>
+            <img class="task-image" [src]="task.imagem" [alt]="task.titulo" />
+          </div>
+        }
+      </div>
+
+      <div class="modal-actions">
+        <button class="btn" type="button" (click)="duplicateRequested.emit(task)">Duplicar</button>
+        <button class="btn danger" type="button" (click)="deleteRequested.emit(task)">Excluir</button>
+      </div>
+    </section>
+  </div>
+}

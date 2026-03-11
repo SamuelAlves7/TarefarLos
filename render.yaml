@@ -3,7 +3,7 @@
     name: tarefas-ia-backend
     env: node
     plan: free
-    buildCommand: ""
+    buildCommand: npm install && npm run client:install && npm run build
     startCommand: node server.js
     envVars:
       - key: NODE_VERSION

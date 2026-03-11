@@ -8,6 +8,7 @@ const HOST = process.env.HOST || "0.0.0.0";
 const PORT = Number(process.env.PORT || 3000);
 const ROOT = __dirname;
 const DB_PATH = path.join(ROOT, "tasks.db");
+const ANGULAR_DIST_DIR = path.join(ROOT, "angular-client", "dist", "angular-client", "browser");
 
 const ALLOWED_ORIGINS = (process.env.ALLOWED_ORIGINS || "")
   .split(",")
@@ -269,28 +270,36 @@ function contentType(filePath) {
   const ext = path.extname(filePath).toLowerCase();
   if (ext === ".html") return "text/html; charset=utf-8";
   if (ext === ".js") return "application/javascript; charset=utf-8";
+  if (ext === ".mjs") return "application/javascript; charset=utf-8";
   if (ext === ".css") return "text/css; charset=utf-8";
   if (ext === ".json") return "application/json; charset=utf-8";
   if (ext === ".png") return "image/png";
   if (ext === ".jpg" || ext === ".jpeg") return "image/jpeg";
   if (ext === ".svg") return "image/svg+xml";
+  if (ext === ".ico") return "image/x-icon";
+  if (ext === ".woff2") return "font/woff2";
   return "application/octet-stream";
 }
 
-function safeResolve(urlPath) {
+function safeResolve(rootDir, urlPath) {
   const relative = urlPath.replace(/^[/\\]+/, "");
-  const target = path.resolve(ROOT, relative);
-  if (!target.startsWith(ROOT)) return null;
+  const target = path.resolve(rootDir, relative);
+  if (!target.startsWith(rootDir)) return null;
   return target;
 }
 
 function serveStatic(req, res, url) {
-  let reqPath = url.pathname;
-  if (reqPath === "/") reqPath = "/index.html";
+  const distAvailable = fs.existsSync(ANGULAR_DIST_DIR);
+  const staticRoot = distAvailable ? ANGULAR_DIST_DIR : ROOT;
+  const reqPath = url.pathname === "/" ? "/index.html" : url.pathname;
 
-  const filePath = safeResolve(reqPath);
+  let filePath = safeResolve(staticRoot, reqPath);
   if (!filePath) return sendText(req, res, 403, "Acesso negado.");
-  if (!fs.existsSync(filePath) || fs.statSync(filePath).isDirectory()) {
+
+  const missing = !fs.existsSync(filePath) || fs.statSync(filePath).isDirectory();
+  if (missing && distAvailable) {
+    filePath = path.join(ANGULAR_DIST_DIR, "index.html");
+  } else if (missing) {
     return sendText(req, res, 404, "Arquivo não encontrado.");
   }
 
@@ -330,6 +339,11 @@ const server = http.createServer(async (req, res) => {
 server.listen(PORT, HOST, () => {
   console.log(`Servidor ativo em http://${HOST}:${PORT}`);
   console.log(`Banco SQLite: ${DB_PATH}`);
+  if (fs.existsSync(ANGULAR_DIST_DIR)) {
+    console.log(`Frontend Angular: ${ANGULAR_DIST_DIR}`);
+  } else {
+    console.log("Frontend Angular não encontrado em dist; usando arquivos estáticos legados da raiz.");
+  }
   if (ALLOWED_ORIGINS.length) {
     console.log(`CORS permitido para: ${ALLOWED_ORIGINS.join(", ")}`);
   }
