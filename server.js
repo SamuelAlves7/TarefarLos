@@ -289,18 +289,19 @@ function safeResolve(rootDir, urlPath) {
 }
 
 function serveStatic(req, res, url) {
-  const distAvailable = fs.existsSync(ANGULAR_DIST_DIR);
-  const staticRoot = distAvailable ? ANGULAR_DIST_DIR : ROOT;
+  if (!fs.existsSync(ANGULAR_DIST_DIR)) {
+    return sendText(req, res, 503, "Frontend Angular não encontrado. Execute o build do cliente antes de iniciar o servidor.");
+  }
+
+  const staticRoot = ANGULAR_DIST_DIR;
   const reqPath = url.pathname === "/" ? "/index.html" : url.pathname;
 
   let filePath = safeResolve(staticRoot, reqPath);
   if (!filePath) return sendText(req, res, 403, "Acesso negado.");
 
   const missing = !fs.existsSync(filePath) || fs.statSync(filePath).isDirectory();
-  if (missing && distAvailable) {
+  if (missing) {
     filePath = path.join(ANGULAR_DIST_DIR, "index.html");
-  } else if (missing) {
-    return sendText(req, res, 404, "Arquivo não encontrado.");
   }
 
   const data = fs.readFileSync(filePath);
@@ -339,11 +340,7 @@ const server = http.createServer(async (req, res) => {
 server.listen(PORT, HOST, () => {
   console.log(`Servidor ativo em http://${HOST}:${PORT}`);
   console.log(`Banco SQLite: ${DB_PATH}`);
-  if (fs.existsSync(ANGULAR_DIST_DIR)) {
-    console.log(`Frontend Angular: ${ANGULAR_DIST_DIR}`);
-  } else {
-    console.log("Frontend Angular não encontrado em dist; usando arquivos estáticos legados da raiz.");
-  }
+  console.log(`Frontend Angular esperado em: ${ANGULAR_DIST_DIR}`);
   if (ALLOWED_ORIGINS.length) {
     console.log(`CORS permitido para: ${ALLOWED_ORIGINS.join(", ")}`);
   }
